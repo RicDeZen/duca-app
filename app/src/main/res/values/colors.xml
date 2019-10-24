@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#d45252</color>
+    <color name="colorPrimaryDark">#9f303b</color>
+    <color name="colorAccent">#fa0009</color>
+    <color name="colorCardview">#f1f1f1</color>
+    <color name="browserBar">#0066ff</color>
+    <color name="SOSbuttons">#0088ff</color>
+    <color name="pureRed">#ff0000</color>
+    <color name="pureGreen">#00ff00</color>
+    <color name="pureBlue">#0000ff</color>
+</resources>

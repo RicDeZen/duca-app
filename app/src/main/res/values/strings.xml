@@ -1,0 +1,51 @@
+<resources>
+    <string name="app_name">DucaApp</string>
+    <string name="URL_sito">https://www.liceoduca.edu.it</string>
+    <string name="URL_feed">https://www.liceoduca.edu.it/feed/</string>
+    <string name="URL_config">https://www.liceoduca.edu.it/_document/ducaapp/ducaapp.txt</string>
+    <string name="channel_name">DucaAppNotif</string>
+    <string name="channel_ID">DucaApp7455</string>
+    <string name="channel_desc">Canale incaricato di trasmettere le notifiche dell\'applicazione DucaApp</string>
+    <string name="channel2_name">DucaAppCirc</string>
+    <string name="channel2_ID">DucaApp2690</string>
+    <string name="channel2_desc">Canale incaricato di trasmettere le notifiche riguardo le circolari</string>
+    <string name="info_dialog">Applicazione progettata e realizzata da Riccardo De Zen, ex-studente del liceo Duca degli Abruzzi
+        e ora studente di Ingegneria Informatica presso l\'università di Padova,
+        con la consulenza del Professor Gianni Trombetta.\n\nUna volta perfezionata
+        l\'applicazione, è possibile che il codice sorgente venga reso disponibile come materiale didattico.\n\nIn
+        caso di errori e malfunzionamenti contattare:</string>
+    <string name="msg_error_0">Non sono stati trovati i dati delle circolari, assicurarsi di aver concesso
+    all\'applicazione i permessi di lettura e scrittura e premere sull\'icona di aggiornamento in alto a sinistra
+    nel menù.</string>
+    <string name="msg_error_1">Non sono stati trovati i dati degli orari, assicurarsi di aver concesso
+    all\'applicazione i permessi di lettura e scrittura e premere sull\'icona di aggiornamento in alto a sinistra.</string>
+    <string-array name="instructions_titles">
+        <item>Registrarsi</item>
+        <item>Login</item>
+        <item>Per i docenti</item>
+        <item>Per gli studenti</item>
+        <item>Logout</item>
+    </string-array>
+    <string-array name="instructions_pres">
+        <item>Premere su REGISTRATI e registrarsi (viene inviata una mail di conferma contenente un link da visitare,
+        le registrazioni non confermate vengono rimosse dopo un giorno).</item>
+        <item>Premere su LOGIN per entrare.</item>
+        <item>Se sei un docente devi, in sequenza:\n
+        1. Inserire le materie con il menù che trovi in alto a destra, vicino al tuo nome;\n
+        2. Inserire le disponibilità;\n
+        3. Visualizzare le prenotazioni.</item>
+        <item>Se sei uno studente devi, in sequenza:\n
+        1. Cercare le disponibilità per docente o materia con il menù che trovi in alto a destra,
+        vicino al tuo nome;\n
+        2. Inserire la prenotazione per te e i tuoi compagni;\n
+        3. Visualizzare le tue prenotazioni ed eventualmente modificarle (solo il responsabile può modificare).</item>
+        <item>Effettua il LOGOUT, in ogni caso la sessione termina dopo 2 ore di inattività o alla chiusura del browser.</item>
+    </string-array>
+    <string-array name="instructions_posts">
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+    </string-array>
+</resources>

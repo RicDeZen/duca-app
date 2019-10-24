@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <SwitchPreference
+        android:key="pref_notif"
+        android:title="Attiva notifiche"
+        android:summary="Pulsante per attivare le notifiche"
+        android:defaultValue="false" />
+    <EditTextPreference
+        android:key="pref_url_site"
+        android:title="URL sito"
+        android:defaultValue="https://www.liceoduca.edu.it"/>
+    <EditTextPreference
+        android:key="pref_url_circolari"
+        android:title="URL circolari"
+        android:defaultValue="https://www.liceoduca.edu.it"/>
+    <EditTextPreference
+        android:key="pref_url_orario_docenti"
+        android:title="URL orario per docente"
+        android:defaultValue="empty"/>
+    <EditTextPreference
+        android:key="pref_url_orario_classi"
+        android:title="URL orario per classi"
+        android:defaultValue="empty"/>
+</PreferenceScreen>

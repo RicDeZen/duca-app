@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView_infodialog"
+        android:paddingBottom="16dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/imageView_mail_icon"
+                android:layout_width="20sp"
+                android:layout_height="20sp"
+                android:layout_below="@+id/textView_infodialog2"
+                android:layout_alignStart="@+id/textView_infodialog2"
+                android:layout_alignLeft="@+id/textView_infodialog2"
+                app:srcCompat="@drawable/mail_vector" />
+
+            <TextView
+                android:id="@+id/textView_myMail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="sendMail"
+                android:layout_below="@+id/textView_infodialog2"
+                android:layout_marginLeft="3sp"
+                android:layout_toEndOf="@+id/imageView_mail_icon"
+                android:layout_toRightOf="@+id/imageView_mail_icon"
+                android:text="riccardodezen98@gmail.com"
+                android:textColor="@color/colorPrimaryDark" />
+
+            <pl.droidsonroids.gif.GifImageButton
+                android:id="@+id/gifImageButton"
+                android:layout_width="125dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView_myMail"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="-20dp"
+                android:background="@null"
+                android:scaleType="matrix"
+                android:src="@drawable/slayerdramon" />
+
+            <TextView
+                android:id="@+id/textView_infodialog2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:fontFamily="@font/raleway"
+                android:justificationMode="inter_word"
+                android:text="@string/info_dialog"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textView_bugreport"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/gifImageButton"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:background="@null"
+                android:fontFamily="@font/raleway"
+                android:text="SEGNALA UN BUG"
+                android:onClick="sendMail"
+                android:textColor="@color/pureRed"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/textView_infodialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="0dp"
+        android:background="@color/colorPrimaryDark"
+        android:fontFamily="@font/portico"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:text="INFO"
+        android:textColor="#ffffff"
+        android:textAlignment="center"
+        android:textSize="30sp" />
+
+</RelativeLayout>

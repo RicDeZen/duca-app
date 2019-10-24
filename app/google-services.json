@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "396060140530",
+    "firebase_url": "https://ducaapp.firebaseio.com",
+    "project_id": "ducaapp",
+    "storage_bucket": "ducaapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:396060140530:android:0b7085031cf57c51",
+        "android_client_info": {
+          "package_name": "com.gov.ducadegliabruzzitreviso.ducaapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "396060140530-7fhu34lqdf9rp18irtsm1g9je1n77p97.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gov.ducadegliabruzzitreviso.ducaapp",
+            "certificate_hash": "98740dcb44166f1ff83d107c1810ea5511e85b3c"
+          }
+        },
+        {
+          "client_id": "396060140530-g9tupamtbe508195aufoqkgv5rfo6k1u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAcmNeLY5Ux_8e5uY7WHGqKbNyWutAM1CM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "396060140530-g9tupamtbe508195aufoqkgv5rfo6k1u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
