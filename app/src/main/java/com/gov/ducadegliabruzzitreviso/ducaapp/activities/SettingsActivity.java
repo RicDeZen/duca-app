@@ -94,13 +94,12 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
     }
 
     private void scheduleWork(){
-        Constraints.Builder constraintsBuilder = new Constraints.Builder()
+        Constraints.Builder cBuilder = new Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.NOT_ROAMING);
-        Constraints constraints = constraintsBuilder.build();
         PeriodicWorkRequest.Builder pBuilder = new PeriodicWorkRequest.Builder(NotifWorker.class, 3, TimeUnit.HOURS)
                 .addTag("DucaNotif")
                 .setInputData(createWorkData())
-                .setConstraints(constraints);
+                .setConstraints(cBuilder.build());
         PeriodicWorkRequest pRequest = pBuilder.build();
         WorkManager.getInstance(context).enqueue(pRequest);
     }

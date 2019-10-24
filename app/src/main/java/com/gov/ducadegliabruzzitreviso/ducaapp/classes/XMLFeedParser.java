@@ -14,6 +14,7 @@ public class XMLFeedParser {
     private static final String ns = null;
 
     public FilterList<FeedItem> parse(InputStream in) throws XmlPullParserException, IOException{
+        if(in == null) return new FilterList<>();
         try{
             XmlPullParser parser = Xml.newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);

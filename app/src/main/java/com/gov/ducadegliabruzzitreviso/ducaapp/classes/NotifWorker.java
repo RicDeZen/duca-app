@@ -19,9 +19,13 @@ import com.gov.ducadegliabruzzitreviso.ducaapp.activities.InfoActivity;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +46,28 @@ public class NotifWorker extends Worker {
         return Result.success();
     }
 
-    private void checkFeed(){
+    private boolean checkFeed(){
+        File file;
+        URLConnection con;
+        InputStream remote_is;
+        InputStream local_is;
+        try{
+            con = (new URL(getInputData().getString("url_feed"))).openConnection();
+            remote_is = con.getInputStream();
+            file = new File(data_path+"/feed_file.xml");
+            if(file.exists()) local_is = new FileInputStream(file);
+        }catch(MalformedURLException e){
+            return false;
+        }catch(IOException e){
+            return false;
+        }
+        XMLFeedParser parser = new XMLFeedParser();
+        List remote_items, local_items;
+
+        return true;
+    }
+
+    private void checkFeed2(){
         try {
             URL url = new URL(getInputData().getString("url_feed"));
             HttpURLConnection con = (HttpURLConnection)url.openConnection();
@@ -65,7 +90,7 @@ public class NotifWorker extends Worker {
             if(news.size() > 1) sendBigNotificationFeed(news);
             isURL.close();
             isFILE.close();
-        }catch(Exception e){ }
+        }catch(Exception e){}
     }
 
     private void checkCircolari(){
