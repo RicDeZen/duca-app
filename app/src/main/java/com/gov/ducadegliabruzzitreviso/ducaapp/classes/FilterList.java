@@ -1,7 +1,5 @@
 package com.gov.ducadegliabruzzitreviso.ducaapp.classes;
 
-import androidx.annotation.Nullable;
-
 import com.gov.ducadegliabruzzitreviso.ducaapp.interfaces.Filterable;
 
 import java.util.ArrayList;

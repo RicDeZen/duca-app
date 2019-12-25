@@ -1,6 +1,5 @@
 package com.gov.ducadegliabruzzitreviso.ducaapp.classes;
 
-import android.util.Log;
 import android.util.Xml;
 
 import com.gov.ducadegliabruzzitreviso.ducaapp.interfaces.Filterable;
