@@ -1,10 +1,12 @@
 package com.gov.ducadegliabruzzitreviso.ducaapp.classes;
 
+import androidx.annotation.Nullable;
+
 import com.gov.ducadegliabruzzitreviso.ducaapp.interfaces.Filterable;
 
 import java.util.ArrayList;
 
-public class FilterList<E extends Filterable> extends ArrayList<E> implements Filterable{
+public class FilterList<E extends Filterable> extends ArrayList<E> implements Filterable<E>{
     public FilterList<E> filter(String s){
         if(s.equals("")) return this;
         FilterList<E> l = new FilterList<>();

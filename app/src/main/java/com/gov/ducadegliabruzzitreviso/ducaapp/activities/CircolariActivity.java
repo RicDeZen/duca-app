@@ -119,7 +119,7 @@ public class CircolariActivity extends AppCompatActivity{
     private void update(){
         CircolariLoader myTask = new CircolariLoader();
         try{
-            myTask.execute(data_path + "circolari.htm");
+            myTask.execute(data_path + "/circolari.htm");
         }
         catch(IndexOutOfBoundsException e){
             canProceed = false;
@@ -180,7 +180,7 @@ public class CircolariActivity extends AppCompatActivity{
 
         @Override
         protected Void doInBackground(String... strings) {
-            output_file = new File(data_path+"circolari.htm");
+            output_file = new File(data_path+"/circolari.htm");
             FileWriter fw;
             PrintWriter pw;
             URL url;

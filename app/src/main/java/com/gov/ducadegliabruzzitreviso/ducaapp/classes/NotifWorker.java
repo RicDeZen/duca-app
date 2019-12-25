@@ -16,6 +16,9 @@ import com.gov.ducadegliabruzzitreviso.ducaapp.R;
 import com.gov.ducadegliabruzzitreviso.ducaapp.activities.CircolariActivity;
 import com.gov.ducadegliabruzzitreviso.ducaapp.activities.FeedActivity;
 import com.gov.ducadegliabruzzitreviso.ducaapp.activities.InfoActivity;
+import com.gov.ducadegliabruzzitreviso.ducaapp.interfaces.Filterable;
+
+import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -41,13 +44,12 @@ public class NotifWorker extends Worker {
     @Override
     public Result doWork() {
         data_path = getInputData().getString("data_path");
-        checkFeed();
-        checkCircolari();
-        return Result.success();
+        return checkFeed() && checkCircolari() ? Result.success() : Result.failure();
     }
 
     private boolean checkFeed(){
         File file;
+        boolean file_exists;
         URLConnection con;
         InputStream remote_is;
         InputStream local_is;
@@ -55,76 +57,62 @@ public class NotifWorker extends Worker {
             con = (new URL(getInputData().getString("url_feed"))).openConnection();
             remote_is = con.getInputStream();
             file = new File(data_path+"/feed_file.xml");
-            if(file.exists()) local_is = new FileInputStream(file);
+            file_exists = file.exists();
+            if(file_exists) local_is = new FileInputStream(file);
+            else local_is = null;
         }catch(MalformedURLException e){
             return false;
         }catch(IOException e){
             return false;
         }
         XMLFeedParser parser = new XMLFeedParser();
-        List remote_items, local_items;
-
+        List<FeedItem> remote_items, local_items;
+        try{
+            remote_items = parser.parse(remote_is);
+            local_items = parser.parse(local_is);
+        }
+        catch(XmlPullParserException e){ return false; }
+        catch (IOException e){ return false; }
+        List<FeedItem> news = new ArrayList<>();
+        for(FeedItem f : remote_items) if(!local_items.contains(f)) news.add(f);
+        if(news.size() == 1) sendNotificationFeed("Duca Degli Abruzzi | Nuova notizia", news.get(0));
+        if(news.size() > 1) sendBigNotificationFeed(news);
         return true;
     }
 
-    private void checkFeed2(){
-        try {
-            URL url = new URL(getInputData().getString("url_feed"));
-            HttpURLConnection con = (HttpURLConnection)url.openConnection();
-            InputStream isURL = con.getInputStream();
-            File feed_file = new File(data_path + "/feed_file.xml");
-            InputStream isFILE = new FileInputStream(feed_file);
-            XMLFeedParser parser1 = new XMLFeedParser();
-            XMLFeedParser parser2 = new XMLFeedParser();
-            List OnlineItems = parser1.parse(isURL);
-            List LocalItems = parser2.parse(isFILE);
-            List news = new ArrayList();
-            for(int i = 0; i < OnlineItems.size(); i++){
-                boolean e = false;
-                for(int j = 0; j < LocalItems.size(); j++){
-                    if(((FeedItem)(OnlineItems.get(i))).title.equals(((FeedItem)(LocalItems.get(j))).title)){e = true;}
-                }
-                if(!e) news.add(OnlineItems.get(i));
-            }
-            if(news.size() == 1) sendNotificationFeed("Duca Degli Abruzzi | Nuova notizia", (FeedItem)(news.get(0)));
-            if(news.size() > 1) sendBigNotificationFeed(news);
-            isURL.close();
-            isFILE.close();
-        }catch(Exception e){}
-    }
-
-    private void checkCircolari(){
-        try {
-            URL url = new URL(getInputData().getString("url_circolari"));
-            HttpURLConnection con = (HttpURLConnection)url.openConnection();
-            CircolariParser parser1 = new CircolariParser();
-            CircolariParser parser2 = new CircolariParser();
-            InputStream isURL = con.getInputStream();
-            File circolari_file = new File(data_path + "circolari.htm");
-            List onlineItems = parser1.parse(isURL);
-            isURL.close();
-            List localItems = new ArrayList();
-            try{
-                InputStream isFILE = new FileInputStream(circolari_file);
-                localItems = parser2.parse(isFILE);
-                isFILE.close();
-            }catch(Exception e){}
-            List news = new ArrayList();
-            for(int i = 0; i < onlineItems.size() && i < 10; i++){
-                boolean exists = false;
-                for(int j = 0; j < localItems.size() && j < 10; j++){
-                    if(((Circolare)onlineItems.get(i)).titolo.equals(((Circolare)localItems.get(j)).titolo)){
-                        exists = true;
-                    }
-                }
-                if(!exists){
-                    news.add(onlineItems.get(i));
-                }
-            }
-            if(news.size() == 1) sendNotificationCircolari("Duca degli Abruzzi | Nuova Circolare", ((Circolare)news.get(0)).titolo);
-            if(news.size() > 1) sendBigNotificationCircolari(news);
+    private boolean checkCircolari(){
+        File file;
+        boolean file_exists;
+        URLConnection con;
+        InputStream remote_is;
+        InputStream local_is;
+        try{
+            con = (new URL(getInputData().getString("url_circolari"))).openConnection();
+            remote_is = con.getInputStream();
+            file = new File(data_path+"/circolari.htm");
+            file_exists = file.exists();
+            if(file_exists) local_is = new FileInputStream(file);
+            else local_is = null;
+        }catch(MalformedURLException e){
+            return false;
+        }catch(IOException e){
+            return false;
         }
-        catch(Exception e){e.printStackTrace();}
+        CircolariParser parser = new CircolariParser();
+        List<Filterable> remote_items, local_items;
+        try{
+            remote_items = parser.parse(remote_is);
+            local_items = parser.parse(local_is);
+        }
+        catch(XmlPullParserException e){ return false; }
+        catch (IOException e){ return false; }
+        List<Filterable> news = new ArrayList<>();
+        for(Filterable f : remote_items){
+            for(Filterable l : local_items) if(l.equals(f)) news.add(f);
+        }
+        if(news.size() == 1) sendNotificationCircolari("Duca degli Abruzzi | Nuova Circolare", ((Circolare)news.get(0)).titolo);
+        if(news.size() > 1) sendBigNotificationCircolari(news);
+        return true;
     }
 
     public void sendNotificationFeed(String title, FeedItem item){

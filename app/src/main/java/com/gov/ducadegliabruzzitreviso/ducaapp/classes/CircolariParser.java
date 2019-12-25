@@ -19,6 +19,7 @@ public class CircolariParser {
     private FilterList<Filterable> items = new FilterList<>();
 
     public FilterList<Filterable> parse(InputStream in) throws XmlPullParserException, IOException {
+        if(in == null) return items;
         try{
             XmlPullParser parser = Xml.newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);

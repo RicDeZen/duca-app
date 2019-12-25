@@ -1,5 +1,7 @@
 package com.gov.ducadegliabruzzitreviso.ducaapp.classes;
 
+import androidx.annotation.Nullable;
+
 import com.gov.ducadegliabruzzitreviso.ducaapp.interfaces.Filterable;
 
 public class FeedItem implements Filterable {
@@ -17,10 +19,17 @@ public class FeedItem implements Filterable {
         this.expanded = false;
     }
 
-    public void flip(){ expanded = !expanded; }
-
     @Override
     public boolean contains(String s) {
         return title.contains(s);
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if(obj instanceof FeedItem){
+            FeedItem f = (FeedItem)obj;
+            return f.title.equals(this.title);
+        }
+        return false;
     }
 }
