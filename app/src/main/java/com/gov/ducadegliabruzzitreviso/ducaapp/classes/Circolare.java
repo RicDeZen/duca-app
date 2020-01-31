@@ -13,7 +13,7 @@ public class Circolare implements Filterable {
     }
 
     @Override
-    public boolean contains(String s) {
+    public boolean matches(String s) {
         return (titolo.toLowerCase()).contains(s.toLowerCase());
     }
 

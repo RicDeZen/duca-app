@@ -15,9 +15,9 @@ import java.io.StringReader;
 
 public class CircolariParser {
     private static final String ns = null;
-    private FilterList<Filterable> items = new FilterList<>();
+    private FilterArrayList<Filterable> items = new FilterArrayList<>();
 
-    public FilterList<Filterable> parse(InputStream in) throws XmlPullParserException, IOException {
+    public FilterArrayList<Filterable> parse(InputStream in) throws XmlPullParserException, IOException {
         if(in == null) return items;
         try{
             XmlPullParser parser = Xml.newPullParser();
@@ -42,7 +42,7 @@ public class CircolariParser {
         return items;
     }
 
-    public FilterList<Filterable> parseByBundle(InputStream in) throws XmlPullParserException, IOException {
+    public FilterArrayList<Filterable> parseByBundle(InputStream in) throws XmlPullParserException, IOException {
         try{
             XmlPullParser parser = Xml.newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
@@ -93,7 +93,7 @@ public class CircolariParser {
     }
 
     private void readBundle(XmlPullParser parser) throws XmlPullParserException, IOException {
-        FilterList<Circolare> bundle = new FilterList<>();
+        FilterArrayList<Filterable> bundle = new FilterArrayList<>();
         boolean firstOfBundle = true;
         int current = parser.next();
         try {

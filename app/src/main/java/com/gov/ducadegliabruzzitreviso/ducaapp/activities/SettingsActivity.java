@@ -34,6 +34,9 @@ import com.gov.ducadegliabruzzitreviso.ducaapp.classes.NotifWorker;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Activity containing settings and contact button.
+ */
 public class SettingsActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
     private String url_sito;
     private String url_circolari;
@@ -41,6 +44,7 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
     private Context context;
     private SharedPreferences sharedPreferences;
     private SettingsFragment settingsFragment = new SettingsFragment();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,19 +68,20 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
                 mFrag.show(getSupportFragmentManager(), "Info");
             }
         });
-        url_sito = sharedPreferences.getString("pref_url_site","https://www.liceoduca.edu.it");
-        url_circolari = sharedPreferences.getString("pref_url_circolari", "https://www.liceoduca.edu.it/studenti/circolari-studenti-anno-scolastico-2018-2019/");
+        url_sito = sharedPreferences.getString("pref_url_site", "https://www.liceoduca.edu.it");
+        url_circolari = sharedPreferences.getString("pref_url_circolari", "https://www.liceoduca" +
+                ".edu.it/studenti/circolari-studenti-anno-scolastico-2018-2019/");
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if(key.equals("pref_notif")) {
+        if (key.equals("pref_notif")) {
             if (sharedPreferences.getBoolean(key, false)) {
                 scheduleWork();
             } else {
                 dismissWork();
             }
-        }else{
+        } else {
             settingsFragment.fix();
         }
     }
@@ -93,10 +98,11 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
         PreferenceManager.getDefaultSharedPreferences(context).registerOnSharedPreferenceChangeListener(this);
     }
 
-    private void scheduleWork(){
+    private void scheduleWork() {
         Constraints.Builder cBuilder = new Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.NOT_ROAMING);
-        PeriodicWorkRequest.Builder pBuilder = new PeriodicWorkRequest.Builder(NotifWorker.class, 3, TimeUnit.HOURS)
+        PeriodicWorkRequest.Builder pBuilder = new PeriodicWorkRequest.Builder(NotifWorker.class,
+                3, TimeUnit.HOURS)
                 .addTag("DucaNotif")
                 .setInputData(createWorkData())
                 .setConstraints(cBuilder.build());
@@ -104,34 +110,35 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
         WorkManager.getInstance(context).enqueue(pRequest);
     }
 
-    private void dismissWork(){
+    private void dismissWork() {
         WorkManager.getInstance(context).cancelAllWorkByTag("DucaNotif");
     }
 
-    private Data createWorkData(){
+    private Data createWorkData() {
         Data.Builder builder = new Data.Builder();
-        builder.putString("url_feed", url_sito+"/feed/");
+        builder.putString("url_feed", url_sito + "/feed/");
         builder.putString("url_circolari", url_circolari);
         builder.putString("data_path", getApplicationContext().getFilesDir() + "/DucaApp");
         return builder.build();
     }
 
-    public static class SettingsFragment extends PreferenceFragment{
+    public static class SettingsFragment extends PreferenceFragment {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.preferences);
             fix();
         }
-        public void fix(){
+
+        public void fix() {
             EditTextPreference pref;
             Preference p = findPreference("pref_url_site");
-            if(p instanceof EditTextPreference) {
+            if (p instanceof EditTextPreference) {
                 pref = (EditTextPreference) p;
                 pref.setSummary(pref.getText());
             }
             p = findPreference("pref_url_circolari");
-            if(p instanceof EditTextPreference) {
+            if (p instanceof EditTextPreference) {
                 pref = (EditTextPreference) p;
                 pref.setSummary(pref.getText());
             }
@@ -147,16 +154,19 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.menu_item:
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.URL_sito)));
+                Intent intent = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse(getString(R.string.URL_sito)));
                 startActivity(intent);
                 return true;
             case android.R.id.home:
                 onBackPressed();
-            default: return super.onOptionsItemSelected(item);
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -173,11 +183,11 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
         }
     }
 
-    public void sendMail(View v){
+    public void sendMail(View v) {
         int id = v.getId();
         Intent mailIntent = new Intent(Intent.ACTION_VIEW);
         Uri data;
-        switch(id){
+        switch (id) {
             case R.id.textView_myMail:
                 data = Uri.parse("mailto:riccardodezen98@gmail.com?");
                 mailIntent.setData(data);

@@ -23,8 +23,14 @@ import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 
-public class LinkTask extends AsyncTask<String, Integer, Void>{
-    private Context c;
+/**
+ * Class defining an AsyncTask to find the documents page and timetables page links from the
+ * website homepage.
+ *
+ * @author Riccardo De Zen
+ */
+public class LinkTask extends AsyncTask<String, Integer, Void> {
+    private Context context;
     private String home_url;
     private String circ_url = "";
     private String orari_url = "";
@@ -34,31 +40,34 @@ public class LinkTask extends AsyncTask<String, Integer, Void>{
     private static final String ns = null;
     private boolean error = false;
 
-    public LinkTask(Context c){
+    public LinkTask(Context context) {
         super();
-        this.c = c;
+        this.context = context;
     }
+
     @Override
     protected Void doInBackground(String... strings) {
         //strings[0] homepage url
         //strings[1] path directory principale
-        try{
-            if(strings.length < 2) return null;
+        try {
+            if (strings.length < 2) return null;
             home_url = strings[0];
             data_path = strings[1];
-            if(!DownloadFile(home_url, "/home_file.htm")) return null;
+            if (!DownloadFile(home_url, "/home_file.htm")) return null;
             //apro il file della home e cerco il link che contiene "circolari" nel proprio title
             XmlPullParser parser = Xml.newPullParser();
-            parser.setInput(new FileInputStream(new File(data_path+"/home_file.htm")), null);
+            parser.setInput(new FileInputStream(new File(data_path + "/home_file.htm")), null);
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_DOCDECL, false);
             parser.defineEntityReplacementText("ntilde", "\u00F1");
             parser.defineEntityReplacementText("nbsp", " ");
             parser.defineEntityReplacementText("raquo", " ");
             parser.nextTag();
-            while(parser.getEventType() != XmlPullParser.END_DOCUMENT) {
-                if(parser.getEventType() != XmlPullParser.START_TAG) {
-                    try{parser.next();}
-                    catch(XmlPullParserException e){ }
+            while (parser.getEventType() != XmlPullParser.END_DOCUMENT) {
+                if (parser.getEventType() != XmlPullParser.START_TAG) {
+                    try {
+                        parser.next();
+                    } catch (XmlPullParserException e) {
+                    }
                     continue;
                 }
                 String name = parser.getName();
@@ -66,63 +75,68 @@ public class LinkTask extends AsyncTask<String, Integer, Void>{
                 if (name.equals("a") && title != null && title.toLowerCase().contains("circolari")) {
                     circ_url = parser.getAttributeValue(ns, "href");
                     break;
-                }
-                else{
-                    try{
+                } else {
+                    try {
                         parser.next();
-                    }catch(XmlPullParserException e){
-                         
+                    } catch (XmlPullParserException e) {
+
                     }
                 }
             }
             //ricerca pagina con orari
-            parser.setInput(new FileInputStream(new File(data_path+"/home_file.htm")), null);
+            parser.setInput(new FileInputStream(new File(data_path + "/home_file.htm")), null);
             parser.nextTag();
-            while(parser.getEventType() != XmlPullParser.END_DOCUMENT) {
-                if(parser.getEventType() != XmlPullParser.START_TAG) {
-                    try{parser.next();}
-                    catch(XmlPullParserException e){ }
+            while (parser.getEventType() != XmlPullParser.END_DOCUMENT) {
+                if (parser.getEventType() != XmlPullParser.START_TAG) {
+                    try {
+                        parser.next();
+                    } catch (XmlPullParserException e) {
+                    }
                     continue;
                 }
                 String name = parser.getName();
                 String href = parser.getAttributeValue(ns, "href");
                 String text;
-                if(name.equals("a")){
-                    while(parser.getEventType() != XmlPullParser.END_TAG) {
+                if (name.equals("a")) {
+                    while (parser.getEventType() != XmlPullParser.END_TAG) {
                         try {
                             parser.next();
-                        } catch (XmlPullParserException e) { }
+                        } catch (XmlPullParserException e) {
+                        }
                         if (parser.getEventType() == XmlPullParser.TEXT) {
                             text = parser.getText();
                             if (text.toLowerCase().contains("orario scolastico")) orari_url = href;
                         }
                     }
-                }
-                else{
-                    try{
+                } else {
+                    try {
                         parser.next();
-                    }catch(XmlPullParserException e){}
+                    } catch (XmlPullParserException e) {
+                    }
                 }
             }
-            if(!DownloadFile(orari_url, "/orari_file.htm")) return null;
+            if (!DownloadFile(orari_url, "/orari_file.htm")) return null;
             //ricerca link degli orari
-            parser.setInput(new FileInputStream(new File(data_path+"/orari_file.htm")), null);
+            parser.setInput(new FileInputStream(new File(data_path + "/orari_file.htm")), null);
             parser.nextTag();
             int i = 0;
-            while(parser.getEventType() != XmlPullParser.END_DOCUMENT) {
-                if(parser.getEventType() != XmlPullParser.START_TAG) {
-                    try{parser.next();}
-                    catch(XmlPullParserException e){ }
+            while (parser.getEventType() != XmlPullParser.END_DOCUMENT) {
+                if (parser.getEventType() != XmlPullParser.START_TAG) {
+                    try {
+                        parser.next();
+                    } catch (XmlPullParserException e) {
+                    }
                     continue;
                 }
                 String name = parser.getName();
                 String href = parser.getAttributeValue(ns, "href");
                 String text;
-                if(name.equals("a")){
-                    while(parser.getEventType() != XmlPullParser.END_TAG) {
+                if (name.equals("a")) {
+                    while (parser.getEventType() != XmlPullParser.END_TAG) {
                         try {
                             parser.next();
-                        } catch (XmlPullParserException e) { }
+                        } catch (XmlPullParserException e) {
+                        }
                         if (parser.getEventType() == XmlPullParser.TEXT) {
                             text = parser.getText();
                             if (text.toLowerCase().contains("per classi (")) orari_classi = href;
@@ -135,17 +149,25 @@ public class LinkTask extends AsyncTask<String, Integer, Void>{
                             }
                         }
                     }
-                }
-                else{
-                    try{
+                } else {
+                    try {
                         parser.next();
-                    }catch(XmlPullParserException e){}
+                    } catch (XmlPullParserException e) {
+                    }
                 }
             }
-        }catch(FileNotFoundException e){   error = true; return null;}
-        catch(XmlPullParserException e){   error = true; return null;}
-        catch(IOException e){   error = true; return null;}
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(c);
+        } catch (FileNotFoundException e) {
+            error = true;
+            return null;
+        } catch (XmlPullParserException e) {
+            error = true;
+            return null;
+        } catch (IOException e) {
+            error = true;
+            return null;
+        }
+        SharedPreferences sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("pref_url_circolari", circ_url);
         editor.putString("pref_url_orario_classi", orari_classi);
@@ -155,36 +177,35 @@ public class LinkTask extends AsyncTask<String, Integer, Void>{
         return null;
     }
 
-    public boolean hasError(){return error;}
+    public boolean hasError() {
+        return error;
+    }
 
-    private boolean DownloadFile(String s, String name){
+    private boolean DownloadFile(String s, String name) {
         //s = url della pagina
         //name = nome file
         boolean success;
-        try{
+        try {
             new File(data_path).mkdirs();
             URL url = new URL(s);
-            HttpURLConnection con = (HttpURLConnection)url.openConnection();
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setConnectTimeout(5000);
             InputStream is = con.getInputStream();
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
-            FileWriter fw = new FileWriter(data_path+name);
+            FileWriter fw = new FileWriter(data_path + name);
             PrintWriter pw = new PrintWriter(fw);
             String line;
-            while((line = br.readLine()) != null){
+            while ((line = br.readLine()) != null) {
                 pw.println(line);
             }
             fw.close();
             br.close();
             success = true;
-        }
-        catch(MalformedURLException e){
+        } catch (MalformedURLException e) {
             return false;
-        }
-        catch(SocketTimeoutException e){
+        } catch (SocketTimeoutException e) {
             return false;
-        }
-        catch(IOException e){
+        } catch (IOException e) {
             return false;
         }
         return success;

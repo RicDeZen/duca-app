@@ -20,7 +20,7 @@ public class FeedItem implements Filterable {
     }
 
     @Override
-    public boolean contains(String s) {
+    public boolean matches(String s) {
         return title.contains(s);
     }
 
