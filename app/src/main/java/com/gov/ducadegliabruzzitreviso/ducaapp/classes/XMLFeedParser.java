@@ -10,24 +10,30 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * Class used to parse the data coming from an InputStream into a list of Feed items.
+ *
+ * @author Riccardo De Zen
+ */
 public class XMLFeedParser {
     private static final String ns = null;
 
-    public FilterList<FeedItem> parse(InputStream in) throws XmlPullParserException, IOException{
-        try{
+    public FilterArrayList<FeedItem> parse(InputStream in) throws XmlPullParserException,
+            IOException {
+        if (in == null) return new FilterArrayList<>();
+        try {
             XmlPullParser parser = Xml.newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(in, null);
             parser.nextTag();
             return readFeed(parser);
-        }
-        finally {
+        } finally {
             in.close();
         }
     }
 
-    private FilterList<FeedItem> readFeed(XmlPullParser parser) throws XmlPullParserException, IOException {
-        FilterList<FeedItem> items = new FilterList<>();
+    private FilterArrayList<FeedItem> readFeed(XmlPullParser parser) throws XmlPullParserException, IOException {
+        FilterArrayList<FeedItem> items = new FilterArrayList<>();
 
         //parser.require(XmlPullParser.START_TAG, ns, "xml");
         while (parser.next() != XmlPullParser.END_DOCUMENT) {
@@ -42,24 +48,23 @@ public class XMLFeedParser {
                 parser.next();
             }
         }
-        if(items.size()==0) items.add(new FeedItem("Errore di elaborazione", "", "", ""));
+        if (items.size() == 0) items.add(new FeedItem("Errore di elaborazione", "", "", ""));
         return items;
     }
 
     public Object getFirst(InputStream in) throws XmlPullParserException, IOException {
-        try{
+        try {
             XmlPullParser parser = Xml.newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(in, null);
             parser.nextTag();
             return readFirst(parser);
-        }
-        finally {
+        } finally {
             in.close();
         }
     }
 
-    private Object readFirst(XmlPullParser parser) throws XmlPullParserException, IOException{
+    private Object readFirst(XmlPullParser parser) throws XmlPullParserException, IOException {
         parser.require(XmlPullParser.START_TAG, ns, "rss");
         while (parser.next() != XmlPullParser.END_DOCUMENT) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
@@ -106,10 +111,9 @@ public class XMLFeedParser {
         parser.require(XmlPullParser.START_TAG, ns, "title");
         String title = readText(parser);
         parser.require(XmlPullParser.END_TAG, ns, "title");
-        if(Build.VERSION.SDK_INT >= 24){
+        if (Build.VERSION.SDK_INT >= 24) {
             title = (Html.fromHtml(title, Html.FROM_HTML_MODE_LEGACY)).toString();
-        }
-        else{
+        } else {
             title = (Html.fromHtml(title)).toString();
         }
         return title;
@@ -122,7 +126,8 @@ public class XMLFeedParser {
         return link;
     }
 
-    private String readDescription(XmlPullParser parser) throws IOException, XmlPullParserException {
+    private String readDescription(XmlPullParser parser) throws IOException,
+            XmlPullParserException {
         parser.require(XmlPullParser.START_TAG, ns, "content:encoded");
         String description = readText(parser);
         parser.require(XmlPullParser.END_TAG, ns, "content:encoded");

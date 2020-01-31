@@ -12,9 +12,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.gov.ducadegliabruzzitreviso.ducaapp.R;
 
+/**
+ * Activity for the Browser used to access SOS Studio website.
+ *
+ * @author Riccardo De Zen
+ */
 public class BrowserActivity extends AppCompatActivity {
     private WebView webView;
     private View progressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,7 +28,7 @@ public class BrowserActivity extends AppCompatActivity {
         Intent intent = getIntent();
         progressBar = findViewById(R.id.progressBar);
         progressBar.setVisibility(View.GONE);
-        webView = (WebView)findViewById(R.id.webView_SOS);
+        webView = (WebView) findViewById(R.id.webView_SOS);
         webView.setWebViewClient(new MyWebViewClient());
         webView.loadUrl(intent.getStringExtra("URL"));
 
@@ -36,14 +42,14 @@ public class BrowserActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(webView.canGoBack()){
+        if (webView.canGoBack()) {
             webView.goBack();
-        }else {
+        } else {
             super.onBackPressed();
         }
     }
 
-    private class MyWebViewClient extends WebViewClient{
+    private class MyWebViewClient extends WebViewClient {
 
         @Override
         public void onPageFinished(WebView view, String url) {
@@ -53,7 +59,7 @@ public class BrowserActivity extends AppCompatActivity {
 
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
-            if(url.equals("http://myduca.it/sos/")) finish();
+            if (url.equals("http://myduca.it/sos/")) finish();
             progressBar.setVisibility(View.VISIBLE);
             super.onPageStarted(view, url, favicon);
         }
