@@ -36,22 +36,24 @@ import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat;
 import com.gov.ducadegliabruzzitreviso.ducaapp.R;
 import com.gov.ducadegliabruzzitreviso.ducaapp.classes.LinkTask;
 import com.gov.ducadegliabruzzitreviso.ducaapp.classes.MyUtils;
+import com.gov.ducadegliabruzzitreviso.ducaapp.interfaces.LinkTaskListener;
 import com.lukedeighton.wheelview.WheelView;
 import com.lukedeighton.wheelview.adapter.WheelArrayAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MenuActivity extends AppCompatActivity {
+public class MenuActivity extends AppCompatActivity implements LinkTaskListener {
     //variabili di classe
     private Context context;
     private String data_path;
     private Resources res;
+    private ImageView syncButton;
     private List<Drawable> menuItems = new ArrayList<>();
     private SharedPreferences sharedPreferences;
     private WheelView wheelView;
     private boolean[] valid = new boolean[4];
-    //private float density
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //inizializzazione di base
@@ -84,41 +86,16 @@ public class MenuActivity extends AppCompatActivity {
         });
 
         //setup pulsante Sync
-        final ImageView syncButton = (ImageView)findViewById(R.id.sync_button);
+        syncButton = (ImageView)findViewById(R.id.sync_button);
         syncButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                class ProgressThread extends Thread{
-                    private LinkTask a;
-                    public ProgressThread(LinkTask a){
-                        this.a = a;
-                    }
-                    public void run(){
-                        android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
-                        while(a.getStatus() != AsyncTask.Status.FINISHED){
-                            try{Thread.sleep(500);}
-                            catch(InterruptedException e){e.printStackTrace();}
-                        }
-                        syncButton.clearAnimation();
-                        AnimatedVectorDrawableCompat avd;
-                        if(!a.hasError()){
-                            avd = AnimatedVectorDrawableCompat.create(context, R.drawable.tick_vector);
-                            syncButton.setImageDrawable(avd);
-                            Animatable animatable = (Animatable) syncButton.getDrawable();
-                            animatable.start();
-                        }
-                        else syncButton.setImageResource(R.drawable.ic_sync_icon_red);
-                        checkUrlValidity();
-                        handleUrlValidity();
-                    }
-                }
                 syncButton.setImageResource(R.drawable.ic_sync_icon);
                 Animation animation = AnimationUtils.loadAnimation(context, R.anim.you_spin_me_right_round_baby_right_round);
                 animation.setFillAfter(true);
                 syncButton.startAnimation(animation);
-                LinkTask linkTask = new LinkTask(getApplicationContext());
+                LinkTask linkTask = new LinkTask(getApplicationContext(), MenuActivity.this);
                 linkTask.execute(sharedPreferences.getString("pref_url_site", "https://www.liceoduca.edu.it"), data_path);
-                new ProgressThread(linkTask).start();
             }
         });
 
@@ -229,6 +206,28 @@ public class MenuActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    /**
+     * Method called when an AsyncTask reaches completion
+     *
+     * @param finishedTask The task that reached completion.
+     * @param success      The result for the task, true if the task was completed successfully
+     *                     or false otherwise.
+     */
+    @Override
+    public void onTaskFinished(LinkTask finishedTask, Boolean success) {
+        syncButton.clearAnimation();
+        AnimatedVectorDrawableCompat avd;
+        if(success){
+            avd = AnimatedVectorDrawableCompat.create(context, R.drawable.tick_vector);
+            syncButton.setImageDrawable(avd);
+            Animatable animatable = (Animatable) syncButton.getDrawable();
+            animatable.start();
+        }
+        else syncButton.setImageResource(R.drawable.ic_sync_icon_red);
+        checkUrlValidity();
+        handleUrlValidity();
     }
 
     static class MyWheelAdapter extends WheelArrayAdapter<Drawable>{

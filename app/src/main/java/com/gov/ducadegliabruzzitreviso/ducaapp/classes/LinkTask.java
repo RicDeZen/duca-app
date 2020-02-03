@@ -6,6 +6,8 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Xml;
 
+import com.gov.ducadegliabruzzitreviso.ducaapp.interfaces.LinkTaskListener;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -29,8 +31,9 @@ import java.net.URL;
  *
  * @author Riccardo De Zen
  */
-public class LinkTask extends AsyncTask<String, Integer, Void> {
-    private Context context;
+public class LinkTask extends AsyncTask<String, Integer, Boolean> {
+    private LinkTaskListener resultListener;
+    private SharedPreferences sharedPreferences;
     private String home_url;
     private String circ_url = "";
     private String orari_url = "";
@@ -38,22 +41,22 @@ public class LinkTask extends AsyncTask<String, Integer, Void> {
     private String orari_classi = "";
     private String data_path;
     private static final String ns = null;
-    private boolean error = false;
 
-    public LinkTask(Context context) {
+    public LinkTask(Context context, LinkTaskListener resultListener) {
         super();
-        this.context = context;
+        this.resultListener = resultListener;
+        this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
     @Override
-    protected Void doInBackground(String... strings) {
+    protected Boolean doInBackground(String... strings) {
         //strings[0] homepage url
         //strings[1] path directory principale
         try {
-            if (strings.length < 2) return null;
+            if (strings.length < 2) return false;
             home_url = strings[0];
             data_path = strings[1];
-            if (!DownloadFile(home_url, "/home_file.htm")) return null;
+            if (!DownloadFile(home_url, "/home_file.htm")) return false;
             //apro il file della home e cerco il link che contiene "circolari" nel proprio title
             XmlPullParser parser = Xml.newPullParser();
             parser.setInput(new FileInputStream(new File(data_path + "/home_file.htm")), null);
@@ -157,28 +160,30 @@ public class LinkTask extends AsyncTask<String, Integer, Void> {
                 }
             }
         } catch (FileNotFoundException e) {
-            error = true;
-            return null;
+            return false;
         } catch (XmlPullParserException e) {
-            error = true;
-            return null;
+            return false;
         } catch (IOException e) {
-            error = true;
-            return null;
+            return false;
         }
-        SharedPreferences sharedPreferences =
-                PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("pref_url_circolari", circ_url);
         editor.putString("pref_url_orario_classi", orari_classi);
         editor.putString("pref_url_orario_docenti", orari_docenti);
         editor.apply();
         //risultati salvati nelle shared Preferences
-        return null;
+        return true;
     }
 
-    public boolean hasError() {
-        return error;
+    /**
+     * Callback to the listener, the result in forwarded for analysis.
+     *
+     * @param success Whether this task was completed successfully or not.
+     */
+    @Override
+    protected void onPostExecute(Boolean success) {
+        super.onPostExecute(success);
+        resultListener.onTaskFinished(this, success);
     }
 
     private boolean DownloadFile(String s, String name) {
